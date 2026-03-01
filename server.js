@@ -5,12 +5,14 @@ const admin = require("firebase-admin");
 const app = express();
 app.use(cors());
 
-// IMPORTANT: on va ajouter le fichier serviceAccountKey.json à côté de server.js
-const serviceAccount = require("./serviceAccountKey.json");
+// ✅ Render: on lit la clé depuis une variable d’environnement
+if (!admin.apps.length) {
+  const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+}
 
 app.get("/stats", async (req, res) => {
   try {
